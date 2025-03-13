@@ -13,26 +13,19 @@ lang_dict: dict[str, dict[str, str]] = {
 }
 
 
-def choice_lan() -> str:
+def choice_lang() -> str:
     """
     Запрашивает у пользователя желаемый язык программы
     :return: str: ru or en
     """
-    lang: str = ""
     valid_languages: tuple[str, ...] = ("ru", "en")
-    while lang not in valid_languages:
+    while True:
         lang = input("Выберите язык, русский - ru, английский - en: ")
 
-    return lang
+        if lang in valid_languages:
+            break
 
-    # valid_languages: tuple[str, ...] = ("ru", "en")
-    # while True:
-    #     lang = input("Выберите язык, русский - ru, английский - en: ")
-    #
-    #     if lang in valid_languages:
-    #         break
-    #
-    # return lang
+    return lang
 
 
 def english_to_leetspeak(message) -> str:
@@ -194,6 +187,7 @@ def english_to_leetspeak(message) -> str:
         ],
     }
 
+    REPLACEMENT_CHANCE: float = 0.70
     leetspeak = ""
     for char in message:  # Проверьте каждый символ
         # Вероятность того, что мы изменим символа на leetspeak,
@@ -201,7 +195,7 @@ def english_to_leetspeak(message) -> str:
         # TODO: Антипаттер: Магическое число.
         #  Можно вынести в константу или значение
         #  вероятности получить от пользователя.
-        if char.lower() in char_mapping and random.random() <= 0.70:
+        if char.lower() in char_mapping and random.random() <= REPLACEMENT_CHANCE:
             leetspeak = leetspeak + random.choice(
                 char_mapping[char.lower()]
             )  # добавляем
@@ -213,10 +207,9 @@ def english_to_leetspeak(message) -> str:
 
 
 # TODO: 1. Переименовать фукнцию, добавить дополнительные параметры, например название для файла, кодировка
-def write_result(leetspeak):
+def write_to_file(leetspeak, file_name, encoding):
     """Записывает результат преобразования текста в файл result.txt"""
 
     # TODO: Использовать контекстный менеджер with.
-    output_text = open("results.txt", "a", encoding="UTF-8")
-    output_text.write(str(leetspeak) + "\n")
-    output_text.close()
+    with open(file_name + ".txt", "a", encoding=encoding) as file:
+        file.write(str(leetspeak) + "\n")
