@@ -4,10 +4,14 @@ import random
 
 lang_dict: dict[str, dict[str, str]] = {
     "ru": {
-        "enter_your_message": "Введите ваше сообщение"
+        "enter_your_message": "Введите ваше сообщение",
+        "probability of replacement": "Вероятность замены символов",
+        "result is copied": "[INFO] Результат скопирован в буфер обмена."
     },
     "en": {
-        "enter_your_message": "Enter your message"
+        "enter_your_message": "Enter your message",
+        "probability of replacement": "Probability of symbols replacement",
+        "result is copied": "[INFO] The result has been copied to the clipboard."
     }
 
 }
@@ -27,8 +31,11 @@ def choice_lang() -> str:
 
     return lang
 
+def get_replacement_chance(lang: str) -> float:
+    replacement_chance: float = int(input(f"{lang_dict.get(lang).get("probability of replacement")}: ")) / 100
+    return replacement_chance
 
-def english_to_leetspeak(message) -> str:
+def english_to_leetspeak(message: str, replacement_chance: float) -> str:
     """Преобразует английскую строку в сообщение и возвращает leetspeak."""
     char_mapping: dict[str, list[str]] = {
         "A" : ["/-|", "4"],
@@ -59,13 +66,12 @@ def english_to_leetspeak(message) -> str:
         "Z": ["2"],
     }
 
-    REPLACEMENT_CHANCE: float = 0.70
     leetspeak = ""
     for char in message:
         # TODO: Антипаттер: Магическое число.
         #  Можно вынести в константу или значение
         #  вероятности получить от пользователя.
-        if char.upper() in char_mapping and random.random() <= REPLACEMENT_CHANCE:
+        if char.upper() in char_mapping and random.random() <= replacement_chance:
             leetspeak = leetspeak + random.choice(
                 char_mapping[char.upper()]
             )
@@ -75,9 +81,9 @@ def english_to_leetspeak(message) -> str:
 
 
 # TODO: 1. Переименовать фукнцию, добавить дополнительные параметры, например название для файла, кодировка
-def write_to_file(leetspeak, file_name, encoding):
+def write_to_file(leetspeak: str, file_name: str = "results.txt", encoding: str = "UTF-8"):
     """Записывает результат преобразования текста в файл result.txt"""
 
     # TODO: Использовать контекстный менеджер with.
-    with open(file_name + ".txt", "a", encoding=encoding) as file:
-        file.write(str(leetspeak) + "\n")
+    with open(file_name, mode="a", encoding=encoding) as file:
+        file.write(f"{leetspeak}\n")

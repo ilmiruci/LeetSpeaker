@@ -1,4 +1,4 @@
-import utils
+import leetspeak_tools
 
 # TODO: Аннотации ко всем идентификаторам в коде
 
@@ -10,20 +10,20 @@ except ModuleNotFoundError:
 
 
 def main():
-    lang: str = utils.choice_lang()
+    lang: str = leetspeak_tools.choice_lang()
 
-    print(utils.lang_dict.get(lang).get("enter_your_message") + " 'leet'")
+    print(leetspeak_tools.lang_dict.get(lang).get("enter_your_message") + " 'leet'")
     leet: str = input("> ")
 
-    print()
-    leetspeak: str = utils.english_to_leetspeak(leet)
+    replacement_chance = leetspeak_tools.get_replacement_chance(lang)
+    leetspeak: str = leetspeak_tools.english_to_leetspeak(leet, replacement_chance)
     print(leetspeak)
 
-    utils.write_to_file(leetspeak, file_name="results", encoding="UTF-8")
+    leetspeak_tools.write_to_file(leetspeak)
 
     if flag:
         pyperclip.copy(leetspeak)
-        print("[INFO] Результат скопирован в буфер обмена.")
+        print(f"{leetspeak_tools.lang_dict.get(lang).get("result is copied")}")
 
 
 if __name__ == "__main__":
