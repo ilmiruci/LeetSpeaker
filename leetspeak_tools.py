@@ -1,15 +1,9 @@
+import logging
 import random
 
+logger = logging.getLogger(__name__)
 
-def exists_pyperclip(module_name):
-    try:
-        __import__(module_name)
-    except ModuleNotFoundError:
-        return False
-    return True
-
-
-lang_dict: dict[str, dict[str, str]] = {
+INFO_MESSAGES: dict[str, dict[str, str]] = {
     "ru": {
         "enter_your_message": "Введите ваше сообщение",
         "probability of replacement": "Вероятность замены символов",
@@ -18,9 +12,18 @@ lang_dict: dict[str, dict[str, str]] = {
     "en": {
         "enter_your_message": "Enter your message",
         "probability of replacement": "Probability of symbols replacement",
-        "result is copied": "[INFO] The result has been copied to the clipboard.",
+        "result is copied": ("[INFO] The result has "
+                             "been copied to the clipboard."),
     },
 }
+
+
+def exists_pyperclip(module_name: str) -> bool:
+    try:
+        __import__(module_name)
+    except ModuleNotFoundError:
+        return False
+    return True
 
 
 def choice_lang() -> str:
@@ -41,10 +44,14 @@ def choice_lang() -> str:
 def get_replacement_chance(lang: str) -> float:
     replacement_chance: float = (
         int(
-            input(f"{lang_dict.get(lang).get("probability of replacement")}: ")
+            input(
+                f"{INFO_MESSAGES.get(lang).get("probability of replacement")}: "  # noqa:
+            )
         )
         / 100
     )
+    logger.warning(f"Пользователь выбрал вероятность {replacement_chance}%")
+
     return replacement_chance
 
 
